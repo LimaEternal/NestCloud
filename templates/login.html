@@ -1,24 +1,32 @@
-<!-- templates/login.html -->
 {% extends "base.html" %}
 
 {% block title %}Вход - Nest{% endblock %}
 
-{% block content %}
+{% block body %}
 <h1>Вход</h1>
 <form method="POST">
     <div class="mb-3">
-        <label for="username" class="form-label">Логин</label>
-        <input type="text" class="form-control" id="username" name="username" required>
+        <label for="login" class="form-label">Логин</label>
+        <input type="text" class="form-control" id="login" name="login" required>
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Пароль</label>
         <input type="password" class="form-control" id="password" name="password" required>
     </div>
     <button type="submit" class="btn btn-primary">Войти</button>
-    <a href="{{ url_for('register.register_page') }}" class="ms-3">Создать аккаунт</a>
+    <a href="{{ url_for('register')}}" class="ms-3">Создать аккаунт</a>
 </form>
 
-{% if error %}
+<!-- {% if error %}
     <div class="alert alert-danger mt-3">{{ error }}</div>
-{% endif %}
+{% endif %} -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 {% endblock %}

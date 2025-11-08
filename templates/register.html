@@ -1,22 +1,32 @@
 {% extends "base.html" %}
 
-{% block title %}Регистрация - NestCloud{% endblock %}
+{% block title %}
+Регистрация - NestCloud
+{% endblock %}
 
-{% block content %}
+{% block body %}
 <h1>Регистрация</h1>
-<form method="POST" action="{{ url_for('register.register_page') }}">
+<form method="post" action="/register">
     <div class="mb-3">
-        <label for="username" class="form-label">Логин</label>
-        <input type="text" class="form-control" id="username" name="username" required>
+        <label for="login" class="form-label">Логин</label>
+        <input type="text" class="form-control" id="login" name="login" required>
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Пароль</label>
         <input type="password" class="form-control" id="password" name="password" required>
     </div>
-    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-</form>
-
-{% if error %}
+    <button style="background-color:darkcyan;" type="submit" class="btn btn-outline">Зарегистрироваться</button>
+</form> 
+<!-- {% if error %}
     <div class="alert alert-danger mt-3">{{ error }}</div>
-{% endif %}
+{% endif %} -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 {% endblock %}
