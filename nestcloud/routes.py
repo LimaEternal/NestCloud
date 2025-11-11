@@ -36,19 +36,21 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
-    login = request.form.get("login")
-    password = request.form.get("password")
-    if login and password:
-        user = User.query.filter_by(login=login).first()
+    if request.method == "POST":
+        login = request.form.get("login")
+        password = request.form.get("password")
 
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            return redirect(url_for("home"))
+        if not login or not password:
+            flash("Ошибка: оба поля авторизации должны быть заполнены!")
+            return render_template("login.html")
         else:
-            flash("Неверный логин или пароль")
-    else:
+            user = User.query.filter_by(login=login).first()
+            if user and check_password_hash(user.password, password):
+                login_user(user)
+                return redirect(url_for("home"))
+            else:
+                flash("Неверный логин или пароль")
 
-        flash("Ошибка: оба поля авторизации должны быть заполнены!")
     return render_template("login.html")
 
 
