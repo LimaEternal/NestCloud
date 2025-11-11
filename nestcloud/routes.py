@@ -1,4 +1,3 @@
-# pages/register.py
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, logout_user, login_required
@@ -25,12 +24,17 @@ def register():
             flash("Пожалуйста, заполните все поля!")
             return render_template("register.html")
         else:
-            print(login, password)
-            hash_pwd = generate_password_hash(password)
-            new_user = User(login=login, password=hash_pwd)
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect(url_for("login_page"))
+            user = User.query.filter_by(login=login).first()
+            if user:
+                flash("Пользователь с данным логином уже существует!")
+                return render_template("register.html")
+            else:
+                print(login, password)
+                hash_pwd = generate_password_hash(password)
+                new_user = User(login=login, password=hash_pwd)
+                db.session.add(new_user)
+                db.session.commit()
+                return redirect(url_for("login_page"))
     return render_template("register.html")
 
 

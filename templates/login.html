@@ -15,9 +15,7 @@
     </div>
         <button type="submit" class="btn btn-primary">Войти</button>
     <a href="{{ url_for('register')}}" class="ms-3">Создать аккаунт</a>
-</div>
 </form>
-
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     {% for category, message in messages %}
