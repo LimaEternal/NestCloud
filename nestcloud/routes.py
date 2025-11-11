@@ -41,7 +41,7 @@ def login_page():
         password = request.form.get("password")
 
         if not login or not password:
-            flash("Ошибка: оба поля авторизации должны быть заполнены!")
+            flash("Пожалуйста, заполните все поля!")
             return render_template("login.html")
         else:
             user = User.query.filter_by(login=login).first()
@@ -49,7 +49,7 @@ def login_page():
                 login_user(user)
                 return redirect(url_for("home"))
             else:
-                flash("Неверный логин или пароль")
+                flash("Неверный логин или пароль!")
 
     return render_template("login.html")
 
