@@ -5,25 +5,18 @@
 {% endblock %}
 
 {% block body %}
-<h1>Регистрация</h1>
-<form method="post" action="/register">
+<h1 class="text-center mb-4">Регистрация</h1>
+<div class="col-md-6 col-lg-4 mx-auto">
+  <form method="post" action="{{ url_for('register') }}">
     <div class="mb-3">
-        <label for="login" class="form-label">Логин</label>
-        <input type="text" class="form-control" id="login" name="login">
+      <label for="login" class="form-label">Логин</label>
+      <input type="text" class="form-control" id="login" name="login" required>
     </div>
     <div class="mb-3">
-        <label for="password" class="form-label">Пароль</label>
-        <input type="password" class="form-control" id="password" name="password">
+      <label for="password" class="form-label">Пароль</label>
+      <input type="password" class="form-control" id="password" name="password" required>
     </div>
     <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-</form> 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-danger mt-3">
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+  </form>
+</div>
 {% endblock %}
