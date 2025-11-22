@@ -95,4 +95,84 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
   }
+
+  // Функция сортировки файлов
+  const sortFiles = function(sortType) {
+    const tbody = document.getElementById('filesTableBody');
+    if (!tbody) return;
+
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    if (rows.length === 0) return;
+
+    // Функция для парсинга размера файла в байты
+    const parseFileSize = function(sizeStr) {
+      if (!sizeStr) return 0;
+      const units = {
+        'B': 1,
+        'KB': 1024,
+        'MB': 1024 * 1024,
+        'GB': 1024 * 1024 * 1024,
+        'TB': 1024 * 1024 * 1024 * 1024
+      };
+      const match = sizeStr.trim().match(/^([\d.]+)\s*([A-Z]+)$/i);
+      if (!match) return 0;
+      const value = parseFloat(match[1]);
+      const unit = match[2].toUpperCase();
+      return value * (units[unit] || 1);
+    };
+
+    // Функция для парсинга времени
+    const parseTime = function(timeStr) {
+      return new Date(timeStr).getTime();
+    };
+
+    // Сортировка
+    rows.sort(function(a, b) {
+      let comparison = 0;
+      
+      if (sortType.startsWith('name-')) {
+        const nameA = (a.dataset.filename || '').toLowerCase();
+        const nameB = (b.dataset.filename || '').toLowerCase();
+        comparison = nameA.localeCompare(nameB, 'ru');
+        if (sortType === 'name-desc') comparison = -comparison;
+      } else if (sortType.startsWith('size-')) {
+        const sizeA = parseFileSize(a.dataset.fileSize);
+        const sizeB = parseFileSize(b.dataset.fileSize);
+        comparison = sizeA - sizeB;
+        if (sortType === 'size-desc') comparison = -comparison;
+      } else if (sortType.startsWith('time-')) {
+        const timeA = parseTime(a.dataset.uploadTime);
+        const timeB = parseTime(b.dataset.uploadTime);
+        comparison = timeA - timeB;
+        if (sortType === 'time-desc') comparison = -comparison;
+      }
+      
+      return comparison;
+    });
+
+    // Очищаем tbody и добавляем отсортированные строки
+    tbody.innerHTML = '';
+    rows.forEach(function(row) {
+      tbody.appendChild(row);
+    });
+  };
+
+  // Обработчики для кнопок сортировки
+  const sortDropdownItems = document.querySelectorAll('#sortDropdown .dropdown-item');
+  sortDropdownItems.forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      const sortType = this.dataset.sort;
+      if (sortType) {
+        sortFiles(sortType);
+        // Обновляем текст кнопки
+        const sortBtn = document.getElementById('sortBtn');
+        if (sortBtn) {
+          const icon = sortBtn.querySelector('i');
+          const text = this.textContent.trim();
+          sortBtn.innerHTML = icon ? icon.outerHTML + ' ' + text : text;
+        }
+      }
+    });
+  });
 });

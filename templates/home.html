@@ -52,6 +52,39 @@
       </form>
     </div>
 
+    <!-- КНОПКА СОРТИРОВКИ -->
+    <div class="d-flex justify-content-end mb-3">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-secondary" id="sortBtn" 
+                {% if not files %}disabled{% endif %}
+                data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-sort-down"></i> Сортировать
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" id="sortDropdown">
+          <li><a class="dropdown-item" href="#" data-sort="name-asc">
+            <i class="bi bi-sort-alpha-down"></i> По имени (А-Я)
+          </a></li>
+          <li><a class="dropdown-item" href="#" data-sort="name-desc">
+            <i class="bi bi-sort-alpha-up"></i> По имени (Я-А)
+          </a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#" data-sort="size-asc">
+            <i class="bi bi-sort-numeric-down"></i> По размеру (возрастание)
+          </a></li>
+          <li><a class="dropdown-item" href="#" data-sort="size-desc">
+            <i class="bi bi-sort-numeric-up"></i> По размеру (убывание)
+          </a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#" data-sort="time-asc">
+            <i class="bi bi-sort-down"></i> По времени (старые сначала)
+          </a></li>
+          <li><a class="dropdown-item" href="#" data-sort="time-desc">
+            <i class="bi bi-sort-up"></i> По времени (новые сначала)
+          </a></li>
+        </ul>
+      </div>
+    </div>
+
     <!-- СПИСОК ФАЙЛОВ -->
     {% if files %}
       <div class="table-responsive">
@@ -64,9 +97,11 @@
               <th class="text-center">Действия</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="filesTableBody">
             {% for file in files %}
-              <tr>
+              <tr data-filename="{{ file.filename }}" 
+                  data-file-size="{{ file.file_size }}" 
+                  data-upload-time="{{ file.upload_time.isoformat() }}">
                 <td style="padding-left: 1rem;">
                   <div class="d-flex align-items-center file-row">
                     {% if file.preview_path %}
