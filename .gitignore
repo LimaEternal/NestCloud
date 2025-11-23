@@ -1,4 +1,5 @@
-nestcloud/__pycache__
+nestcloud/
+instance/cloud.db
 __pycache__/
 uploads
 *.pyc
