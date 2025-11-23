@@ -29,7 +29,7 @@ def is_image_file(filename: str) -> bool:
 def generate_image_preview(
     source_path: str,
     output_dir: Optional[str] = None,
-    max_size: Tuple[int, int] = (64, 64),
+    max_size: Tuple[int, int] = (128, 128),
     quality: int = 85,
 ) -> Optional[str]:
     """

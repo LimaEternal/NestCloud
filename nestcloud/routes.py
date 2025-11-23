@@ -10,13 +10,26 @@ from flask import (
     abort,
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from werkzeug.exceptions import RequestEntityTooLarge
+from werkzeug.exceptions import RequestEntityTooLarge, MethodNotAllowed
 from flask_login import login_user, logout_user, login_required, current_user
 from nestcloud import db, app
 from nestcloud.models import User, File
 from forms import UploadForm
 import os
 from utils import save_file
+
+
+def truncate_filename(filename, max_length=15):
+    """Обрезает имя файла, если оно слишком длинное"""
+    if len(filename) <= max_length:
+        return filename
+    name, ext = filename.rsplit(".", 1) if "." in filename else (filename, "")
+    if ext:
+        max_name_length = max_length - len(ext) - 4  # -4 для "..." и "."
+        if max_name_length < 1:
+            return filename[: max_length - 3] + "..."
+        return name[:max_name_length] + "..." + ext
+    return filename[: max_length - 3] + "..."
 
 
 @app.route("/")
@@ -74,7 +87,8 @@ def upload_file():
         print(
             f"✅ Файл успешно загружен и сохранён в БД (preview_path: {new_file.preview_path})"
         )
-        flash(f"Файл '{saved_data['original_filename']}' загружен!", "success")
+        truncated_name = truncate_filename(saved_data["original_filename"])
+        flash(f"Файл '{truncated_name}' загружен!", "success")
 
     except Exception as e:
         print(f"🔥 ОШИБКА: {str(e)}")
@@ -242,7 +256,8 @@ def delete_file(file_id):
         db.session.delete(file_record)
         db.session.commit()
 
-        flash(f"Файл '{filename}' успешно удалён", "success")
+        truncated_name = truncate_filename(filename)
+        flash(f"Файл '{truncated_name}' успешно удалён", "success")
         print(f"✅ Запись из БД удалена для файла: {filename}")
 
     except Exception as e:
@@ -315,6 +330,12 @@ def rename_file(file_id):
 @app.errorhandler(RequestEntityTooLarge)
 def handle_file_too_large(e):
     flash("Файл слишком большой! Максимальный размер — 512 МБ.", "danger")
+    return redirect(url_for("home"))
+
+
+@app.errorhandler(405)
+def handle_method_not_allowed(e):
+    """Обработка ошибки 405 Method Not Allowed"""
     return redirect(url_for("home"))
 
 
