@@ -1,6 +1,7 @@
 pages/__pycache__
-database/__pycache__
+nestcloud/__pycache__
 __pycache__/
+uploads/
 *.pyc
 venv
 .env
