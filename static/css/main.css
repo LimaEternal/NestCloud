@@ -750,3 +750,9 @@ td:last-child .d-flex {
 .table-responsive .table tbody tr:last-child td:last-child {
   border-bottom-right-radius: 12px;
 }
+
+.about-text {
+    margin-top: 1.5em;
+    font-size: 1.5em;
+    line-height: 1.6;
+}
