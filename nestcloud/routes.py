@@ -56,18 +56,18 @@ def home():
 @login_required
 def upload_file():
     print("\n" + "=" * 50)
-    print("🔍 ЗАГРУЗКА ФАЙЛА ЧЕРЕЗ ФОРМУ")
+    print("ЗАГРУЗКА ФАЙЛА ЧЕРЕЗ ФОРМУ")
 
     form = UploadForm()
     if not form.validate_on_submit():
-        print("❌ Валидация формы провалена")
+        print("Валидация формы провалена")
         for error in form.file.errors:
             print(f"   • {error}")
             flash(error, "danger")
         return redirect(url_for("home"))
 
     file = form.file.data
-    print(f"📥 Получен файл: {file.filename}")
+    print(f"Получен файл: {file.filename}")
 
     try:
         saved_data = save_file(file, current_user.id)
@@ -85,13 +85,13 @@ def upload_file():
         db.session.commit()
 
         print(
-            f"✅ Файл успешно загружен и сохранён в БД (preview_path: {new_file.preview_path})"
+            f"Файл успешно загружен и сохранён в БД (preview_path: {new_file.preview_path})"
         )
         truncated_name = truncate_filename(saved_data["original_filename"])
         flash(f"Файл '{truncated_name}' загружен!", "success")
 
     except Exception as e:
-        print(f"🔥 ОШИБКА: {str(e)}")
+        print(f"ОШИБКА: {str(e)}")
         import traceback
 
         traceback.print_exc()
@@ -215,7 +215,7 @@ def download_file(file_id):
         )
 
     except Exception as e:
-        print(f"🔥 ОШИБКА при скачивании файла: {str(e)}")
+        print(f"ОШИБКА при скачивании файла: {str(e)}")
         import traceback
 
         traceback.print_exc()
@@ -242,14 +242,14 @@ def delete_file(file_id):
         file_path = os.path.join(user_folder, file_record.stored_filename)
         if os.path.exists(file_path):
             os.remove(file_path)
-            print(f"✅ Файл удалён: {file_path}")
+            print(f"Файл удалён: {file_path}")
 
         # Удаляем превью, если оно есть
         if file_record.preview_path:
             preview_full_path = os.path.join(user_folder, file_record.preview_path)
             if os.path.exists(preview_full_path):
                 os.remove(preview_full_path)
-                print(f"✅ Превью удалено: {preview_full_path}")
+                print(f"Превью удалено: {preview_full_path}")
 
         # Удаляем запись из БД
         filename = file_record.filename
@@ -258,11 +258,11 @@ def delete_file(file_id):
 
         truncated_name = truncate_filename(filename)
         flash(f"Файл '{truncated_name}' успешно удалён", "success")
-        print(f"✅ Запись из БД удалена для файла: {filename}")
+        print(f"Запись из БД удалена для файла: {filename}")
 
     except Exception as e:
         db.session.rollback()
-        print(f"🔥 ОШИБКА при удалении файла: {str(e)}")
+        print(f"ОШИБКА при удалении файла: {str(e)}")
         import traceback
 
         traceback.print_exc()
@@ -314,11 +314,11 @@ def rename_file(file_id):
         db.session.commit()
 
         flash("Имя файла изменено", "success")
-        print(f"✅ Файл переименован: {old_filename} -> {new_filename}")
+        print(f"Файл переименован: {old_filename} -> {new_filename}")
 
     except Exception as e:
         db.session.rollback()
-        print(f"🔥 ОШИБКА при переименовании файла: {str(e)}")
+        print(f"ОШИБКА при переименовании файла: {str(e)}")
         import traceback
 
         traceback.print_exc()

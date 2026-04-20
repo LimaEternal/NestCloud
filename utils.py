@@ -48,7 +48,7 @@ def generate_image_preview(
         )
 
     if not os.path.exists(source_path):
-        print(f"   ⚠️ Исходный файл не найден: {source_path}")
+        print(f"Исходный файл не найден: {source_path}")
         return None
 
     if output_dir is None:
@@ -56,23 +56,23 @@ def generate_image_preview(
         output_dir = os.path.join(parent_dir, "previews")
 
     os.makedirs(output_dir, exist_ok=True)
-    print(f"   → Папка для превью: {output_dir}")
+    print(f"Папка для превью: {output_dir}")
 
     base_name = os.path.basename(source_path)
     preview_name = f"preview_{base_name}.jpg"
     preview_path = os.path.join(output_dir, preview_name)
-    print(f"   → Путь к превью: {preview_path}")
+    print(f"Путь к превью: {preview_path}")
 
     try:
         with Image.open(source_path) as img:
-            print(f"   → Изображение открыто: {img.size}, формат: {img.format}")
+            print(f"Изображение открыто: {img.size}, формат: {img.format}")
             img = ImageOps.exif_transpose(img)
             img.thumbnail(max_size, Image.Resampling.LANCZOS)
-            print(f"   → Размер после уменьшения: {img.size}")
+            print(f"Размер после уменьшения: {img.size}")
             img.convert("RGB").save(preview_path, format="JPEG", quality=quality)
-            print(f"   → Превью сохранено: {preview_path}")
+            print(f"Превью сохранено: {preview_path}")
     except Exception as e:
-        print(f"   ❌ Ошибка при обработке изображения: {e}")
+        print(f"Ошибка при обработке изображения: {e}")
         import traceback
 
         traceback.print_exc()
@@ -133,29 +133,29 @@ def get_file_icon(filename: str) -> str:
 
 def save_file(file, user_id: int) -> dict:
     """Сохраняет файл в папку пользователя и возвращает данные для БД/превью"""
-    print(f"   → Сохранение файла для пользователя {user_id}")
+    print(f"Сохранение файла для пользователя {user_id}")
 
     # 1. Путь к папке пользователя
     user_folder = os.path.join(app.config["UPLOAD_FOLDER"], f"{user_id}")
-    print(f"   → Папка пользователя: {user_folder}")
+    print(f"Папка пользователя: {user_folder}")
 
     # 2. Проверяем существование папки
     if not os.path.exists(user_folder):
-        print(f"   ⚠️ Папка не существует! Пытаемся создать...")
+        print(f"Папка не существует! Пытаемся создать...")
         os.makedirs(user_folder, exist_ok=True)
 
     # 3. Генерируем уникальное имя
     filename = secure_filename(file.filename)
     unique_filename = f"{uuid.uuid4().hex}_{filename}"
     filepath = os.path.join(user_folder, unique_filename)
-    print(f"   → Итоговый путь: {filepath}")
+    print(f"Итоговый путь: {filepath}")
 
     # 4. Сохраняем файл на диск
     try:
         file.save(filepath)
-        print(f"   ✅ Файл сохранён на диск")
+        print(f"Файл сохранён на диск")
     except Exception as e:
-        print(f"   ❌ Ошибка сохранения на диск: {str(e)}")
+        print(f"Ошибка сохранения на диск: {str(e)}")
         raise
 
     # 5. Готовим данные для БД
@@ -167,7 +167,7 @@ def save_file(file, user_id: int) -> dict:
     preview_relpath = None
     original_filename = file.filename  # Оригинальное имя до secure_filename
     print(
-        f"   → Проверка на изображение: оригинальное имя = {original_filename}, обработанное = {filename}"
+        f"Проверка на изображение: оригинальное имя = {original_filename}, обработанное = {filename}"
     )
 
     if is_image_file(original_filename):
@@ -179,23 +179,21 @@ def save_file(file, user_id: int) -> dict:
             )
             if preview_absolute:
                 preview_relpath = os.path.relpath(preview_absolute, user_folder)
-                print(f"   ✅ Превью создано: {preview_relpath}")
-                print(f"   → Абсолютный путь: {preview_absolute}")
+                print(f"Превью создано: {preview_relpath}")
+                print(f"Абсолютный путь: {preview_absolute}")
             else:
-                print(f"   ⚠️ generate_image_preview вернул None")
+                print(f"generate_image_preview вернул None")
         except Exception as e:
-            print(f"   ❌ Не удалось создать превью: {e}")
+            print(f"Не удалось создать превью: {e}")
             import traceback
 
             traceback.print_exc()
     else:
         # Для не-изображений используем иконку
         preview_relpath = get_file_icon(original_filename)
-        print(
-            f"   → Файл не является изображением, используется иконка: {preview_relpath}"
-        )
+        print(f"Файл не является изображением, используется иконка: {preview_relpath}")
 
-    print(f"   → Размер: {file_size} байт → {human_size}")
+    print(f"Размер: {file_size} байт → {human_size}")
     return {
         "stored_filename": unique_filename,
         "original_filename": original_filename,
